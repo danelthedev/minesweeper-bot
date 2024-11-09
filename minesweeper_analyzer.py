@@ -1,8 +1,11 @@
+from pattern_analyzer import PatternAnalyzer
+
 class MinesweeperAnalyzer:
     def __init__(self, grid, rows, cols):
         self.grid = grid
         self.rows = rows
         self.cols = cols
+        self.pattern_analyzer = PatternAnalyzer(self)
 
     def update(self, grid):
         self.grid = grid

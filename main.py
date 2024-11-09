@@ -1,10 +1,15 @@
-from minesweeper_bot import MinesweeperBot
+from board_processor import BoardProcessor
+from minesweeper_analyzer import MinesweeperAnalyzer
 
-bot: MinesweeperBot = MinesweeperBot()
+from minesweeper_assistant import MinesweeperAssistant
+
 
 def main():
-    bot.play()
+    board_processor: BoardProcessor = BoardProcessor(cell_size=52)
+    minesweeper_analyzer: MinesweeperAnalyzer = MinesweeperAnalyzer(board_processor.game_grid, board_processor.rows, board_processor.columns)
+    minesweeper_assistant: MinesweeperAssistant = MinesweeperAssistant()
 
+    minesweeper_assistant.run()
 
 if __name__ == '__main__':
     main()

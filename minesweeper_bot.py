@@ -33,7 +33,7 @@ class MinesweeperBot:
             if clickedBomb:
                 print("Game over!")
                 # press the space key on the keyboard
-                keyboard.Controller().press(keyboard.Key.space)
+                # keyboard.Controller().press(keyboard.Key.space)
                 time.sleep(1)
 
                 if self.replay_on_complete:
@@ -41,6 +41,27 @@ class MinesweeperBot:
                 else:
                     self.running = False
                     return  # Stop the game
+
+            # Look for pattern-based moves first
+            pattern_safe_moves, pattern_mines = self.analyzer.pattern_analyzer.analyze_patterns()
+
+            # First handle any certain mines we found
+            for x, y in pattern_mines:
+                if self.board_processor.game_grid[x][y] is None:  # Only if not already flagged
+                    print(f"Flagging mine from pattern at ({x}, {y})")
+                    self.click_cell(y, x, flag=True)
+                    self.board_processor.game_grid[x][y] = -1
+                    time.sleep(0.5 + random.random())
+                    continue
+
+            # Then try pattern-based safe moves
+            if pattern_safe_moves:
+                x, y = pattern_safe_moves[0]
+                print(f"Making pattern-based safe move at ({x}, {y})")
+                self.click_cell(y, x)
+                time.sleep(0.5 + random.random())
+                continue
+
 
             # Look for chord clicking opportunities
             chord_moves = self.analyzer.find_chord_moves()
@@ -68,6 +89,7 @@ class MinesweeperBot:
                     self.click_cell(y, x, flag=True)  # Flag the cell
                     self.board_processor.game_grid[x][y] = -1  # Mark as mine
                     time.sleep(0.5 + random.random())
+
 
             # If no safe moves, make the lowest risk move
             best_move = self.analyzer.find_lowest_risk_move()
